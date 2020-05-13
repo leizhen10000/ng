@@ -3,6 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>boot-user</module>
+        <module>boot-common</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -13,13 +17,14 @@
     <groupId>com.leizhen</groupId>
     <artifactId>ng</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>TestHelloWorld</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.bulid.sourceEncoding>UTF-8</project.bulid.sourceEncoding>
+        <project.reporting.outputEncodiing>UTF-8</project.reporting.outputEncodiing>
         <java.version>1.8</java.version>
     </properties>
 
@@ -39,10 +44,6 @@
             <scope>test</scope>
         </dependency>
         <!-- Spring things -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -74,6 +75,7 @@
     <!--    </dependencyManagement>-->
 
     <build>
+        <!-- maven 相关插件 -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -84,6 +86,25 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <!-- 手动删除其它环境的配置文件 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <!-- 先排除 application 开头的配置文件 -->
+                    <exclude>application*.properties</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- filtering 必须设置为 true，才能把 @env@ 这个变量替换成当前环境 -->
+                <filtering>true</filtering>
+                <includes>
+                    <include>application.properties</include>
+                    <include>application-${env}.properties</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
     <!-- maven 多环境-->
@@ -103,7 +124,14 @@
                 <env>test</env>
             </properties>
         </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env>prod</env>
+            </properties>
+        </profile>
     </profiles>
+
 
     <!-- 添加华为 maven 仓库 -->
     <repositories>
@@ -121,5 +149,6 @@
             <url>https://mirrors.huaweicloud.com/repository/maven/</url>
         </pluginRepository>
     </pluginRepositories>
+
 
 </project>
