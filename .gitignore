@@ -63,7 +63,7 @@ hs_err_pid*
 
 # IntelliJ project files
 pom.xml
-src/
+
 target/
 *.properties
-src/main/resources/
+
